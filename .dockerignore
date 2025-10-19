@@ -1,0 +1,9 @@
+# Ignora o git e as dependências
+.git
+node_modules
+
+# Ignora arquivos de ambiente (serão injetados de outra forma)
+.env
+
+# Ignora o código compilado (será gerado dentro do container)
+dist
