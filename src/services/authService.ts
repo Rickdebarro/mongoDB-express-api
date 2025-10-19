@@ -1,25 +1,30 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import userModel from '../models/userModel';
+import User from '../models/userModel';
 import { loginInterface } from '../interfaces/loginInterface';
+
 export const loginUser = async (loginData: loginInterface) => {
   const { email, password } = loginData;
 
-  const user = await userModel.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select('+password');
 
+  if (!user) {
+    throw new Error('Usuário não encontrado.');
+  }
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new Error('Credenciais inválidas.');
+  const isPasswordMatch = await bcrypt.compare(password!, user.password);
+  if (!isPasswordMatch) {
+    throw new Error('Senha incorreta.');
   }
 
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     console.error('Chave secreta JWT não foi configurada.');
-    throw new Error('Erro na configuração do servidor.');
+    throw new Error('Erro na configuração do servidor.'); // Erro 500
   }
 
   const token = jwt.sign({ id: user._id }, secret, {
-    expiresIn: '1h',
+    expiresIn: '8h',
   });
 
   return { token };
