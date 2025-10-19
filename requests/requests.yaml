@@ -1,0 +1,316 @@
+_type: export
+__export_format: 4
+__export_date: 2024-10-18T12:45:00.000Z
+__export_source: insomnia.desktop.app:v9.0.0
+resources:
+  - _id: wrk_1
+    parentId: null
+    modified: 1729245600000
+    created: 1729245600000
+    name: API Autenticação JWT (PRODUÇÃO)
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: env_1
+    parentId: wrk_1
+    modified: 1729245600000
+    created: 1729245600000
+    name: Ambiente Produção (Vercel)
+    data:
+      baseUrl: "https://express-api-mongodb.rickdebarro.tech"
+      authToken: ""
+    dataPropertyOrder:
+      "&":
+        - baseUrl
+        - authToken
+    color: "#e67e22"
+    isPrivate: false
+    metaSortKey: 1729245600000
+    _type: environment
+  - _id: jar_1
+    parentId: wrk_1
+    modified: 1729245600000
+    created: 1729245600000
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: fld_register
+    parentId: wrk_1
+    modified: 1729245600000
+    created: 1729245600000
+    name: 1. Cadastro (/users/register)
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -100
+    _type: request_group
+  - _id: req_reg_ok
+    parentId: fld_register
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/users/register"
+    name: Cadastro bem-sucedido
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Usuario Teste Prod",
+          "email": "teste-prod@email.com",
+          "password": "senha123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -100
+    isPrivate: false
+    _type: request
+  - _id: req_reg_email_repetido
+    parentId: fld_register
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/users/register"
+    name: Erro - E-mail repetido (409)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Outro Usuario Prod",
+          "email": "teste-prod@email.com",
+          "password": "senha456"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -90
+    _type: request
+  - _id: req_reg_senha_invalida
+    parentId: fld_register
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/users/register"
+    name: Erro - Senha inválida (curta) (422)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Usuario Senha Curta",
+          "email": "senha-prod@curta.com",
+          "password": "123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -80
+    _type: request
+  - _id: req_reg_email_invalido
+    parentId: fld_register
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/users/register"
+    name: Erro - E-mail inválido (422)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Usuario Email Invalido",
+          "email": "email-invalido-prod.com",
+          "password": "senha123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -70
+    _type: request
+  - _id: req_reg_mal_formatado
+    parentId: fld_register
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/users/register"
+    name: Erro - Requisição mal formatada (sem campo) (422)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "name": "Usuario Sem Email Prod",
+          "password": "senha123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -60
+    _type: request
+  - _id: fld_login
+    parentId: wrk_1
+    modified: 1729245600000
+    created: 1729245600000
+    name: 2. Login (/auth/login)
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -50
+    _type: request_group
+  - _id: req_login_ok
+    parentId: fld_login
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/auth/login"
+    name: Login bem-sucedido (COPIAR TOKEN DAQUI)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "teste-prod@email.com",
+          "password": "senha123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -100
+    isPrivate: false
+    _type: request
+  - _id: req_login_senha_invalida
+    parentId: fld_login
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/auth/login"
+    name: Erro - Senha inválida (401)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "teste-prod@email.com",
+          "password": "senha-errada-123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -90
+    _type: request
+  - _id: req_login_email_invalido
+    parentId: fld_login
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/auth/login"
+    name: Erro - E-mail não encontrado (404)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "naoexiste-prod@email.com",
+          "password": "senha123"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -80
+    _type: request
+  - _id: req_login_mal_formatado
+    parentId: fld_login
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/auth/login"
+    name: Erro - Requisição mal formatada (sem senha) (422)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email": "teste-prod@email.com"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -70
+    _type: request
+  - _id: fld_protected
+    parentId: wrk_1
+    modified: 1729245600000
+    created: 1729245600000
+    name: 3. Rota Protegida (/protected)
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -25
+    _type: request_group
+  - _id: req_protected_ok
+    parentId: fld_protected
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/protected"
+    name: Acesso com token válido (USA VARIÁVEL)
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -100
+    isPrivate: false
+    _type: request
+  - _id: req_protected_sem_token
+    parentId: fld_protected
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/protected"
+    name: Erro - Acesso sem token
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -90
+    _type: request
+  - _id: req_protected_token_invalido
+    parentId: fld_protected
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/protected"
+    name: Erro - Acesso com token inválido
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjU4ZjcyMmI5YmUwMzA2MmRlNzU0YiIsImlhdCI6MTcyOTI0NTYwMCwiZXhwIjoxNzI5MjQ1NjAwfQ.TOKEN_INVALIDO_AQUI
+    metaSortKey: -80
+    _type: request
