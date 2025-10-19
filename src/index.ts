@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './database';
 import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
+import protectedRoutes from './routes/protectedRoutes'; 
 
 dotenv.config();
 connectDB();
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use(protectedRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'API is running!' });
