@@ -1,13 +1,13 @@
 _type: export
 __export_format: 4
-__export_date: 2024-10-18T12:45:00.000Z
+__export_date: 2024-10-20T10:30:00.000Z
 __export_source: insomnia.desktop.app:v9.0.0
 resources:
   - _id: wrk_1
     parentId: null
     modified: 1729245600000
     created: 1729245600000
-    name: API Autenticação JWT (PRODUÇÃO)
+    name: API v2 (Auth + Tasks) PRODUÇÃO
     description: ""
     scope: collection
     _type: workspace
@@ -41,7 +41,6 @@ resources:
     name: 1. Cadastro (/users/register)
     description: ""
     environment: {}
-    environmentPropertyOrder: null
     metaSortKey: -100
     _type: request_group
   - _id: req_reg_ok
@@ -66,7 +65,6 @@ resources:
         value: application/json
     authentication: {}
     metaSortKey: -100
-    isPrivate: false
     _type: request
   - _id: req_reg_email_repetido
     parentId: fld_register
@@ -114,51 +112,6 @@ resources:
     authentication: {}
     metaSortKey: -80
     _type: request
-  - _id: req_reg_email_invalido
-    parentId: fld_register
-    modified: 1729245600000
-    created: 1729245600000
-    url: "{{ _.baseUrl }}/users/register"
-    name: Erro - E-mail inválido (422)
-    description: ""
-    method: POST
-    body:
-      mimeType: application/json
-      text: |-
-        {
-          "name": "Usuario Email Invalido",
-          "email": "email-invalido-prod.com",
-          "password": "senha123"
-        }
-    parameters: []
-    headers:
-      - name: Content-Type
-        value: application/json
-    authentication: {}
-    metaSortKey: -70
-    _type: request
-  - _id: req_reg_mal_formatado
-    parentId: fld_register
-    modified: 1729245600000
-    created: 1729245600000
-    url: "{{ _.baseUrl }}/users/register"
-    name: Erro - Requisição mal formatada (sem campo) (422)
-    description: ""
-    method: POST
-    body:
-      mimeType: application/json
-      text: |-
-        {
-          "name": "Usuario Sem Email Prod",
-          "password": "senha123"
-        }
-    parameters: []
-    headers:
-      - name: Content-Type
-        value: application/json
-    authentication: {}
-    metaSortKey: -60
-    _type: request
   - _id: fld_login
     parentId: wrk_1
     modified: 1729245600000
@@ -166,7 +119,6 @@ resources:
     name: 2. Login (/auth/login)
     description: ""
     environment: {}
-    environmentPropertyOrder: null
     metaSortKey: -50
     _type: request_group
   - _id: req_login_ok
@@ -190,7 +142,6 @@ resources:
         value: application/json
     authentication: {}
     metaSortKey: -100
-    isPrivate: false
     _type: request
   - _id: req_login_senha_invalida
     parentId: fld_login
@@ -236,43 +187,44 @@ resources:
     authentication: {}
     metaSortKey: -80
     _type: request
-  - _id: req_login_mal_formatado
-    parentId: fld_login
+  - _id: fld_tasks
+    parentId: wrk_1
     modified: 1729245600000
     created: 1729245600000
-    url: "{{ _.baseUrl }}/auth/login"
-    name: Erro - Requisição mal formatada (sem senha) (422)
+    name: 3. CRUD de Tarefas (Protegido)
+    description: ""
+    environment: {}
+    metaSortKey: -25
+    _type: request_group
+  - _id: req_task_post
+    parentId: fld_tasks
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/tasks"
+    name: Criar Nova Tarefa (POST)
     description: ""
     method: POST
     body:
       mimeType: application/json
       text: |-
         {
-          "email": "teste-prod@email.com"
+          "description": "Comprar pão (Produção)"
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
-    authentication: {}
-    metaSortKey: -70
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -100
     _type: request
-  - _id: fld_protected
-    parentId: wrk_1
+  - _id: req_task_get_all
+    parentId: fld_tasks
     modified: 1729245600000
     created: 1729245600000
-    name: 3. Rota Protegida (/protected)
-    description: ""
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -25
-    _type: request_group
-  - _id: req_protected_ok
-    parentId: fld_protected
-    modified: 1729245600000
-    created: 1729245600000
-    url: "{{ _.baseUrl }}/protected"
-    name: Acesso com token válido (USA VARIÁVEL)
+    url: "{{ _.baseUrl }}/tasks"
+    name: Listar Minhas Tarefas (GET)
     description: ""
     method: GET
     body: {}
@@ -281,29 +233,32 @@ resources:
     authentication:
       type: bearer
       token: "{{ _.authToken }}"
-    metaSortKey: -100
-    isPrivate: false
+    metaSortKey: -90
     _type: request
-  - _id: req_protected_sem_token
-    parentId: fld_protected
+  - _id: req_task_get_filter
+    parentId: fld_tasks
     modified: 1729245600000
     created: 1729245600000
-    url: "{{ _.baseUrl }}/protected"
-    name: Erro - Acesso sem token
+    url: "{{ _.baseUrl }}/tasks"
+    name: Listar Tarefas Pendentes (GET Filtro)
     description: ""
     method: GET
     body: {}
-    parameters: []
+    parameters:
+      - name: isDone
+        value: "false"
     headers: []
-    authentication: {}
-    metaSortKey: -90
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -80
     _type: request
-  - _id: req_protected_token_invalido
-    parentId: fld_protected
+  - _id: req_task_get_id
+    parentId: fld_tasks
     modified: 1729245600000
     created: 1729245600000
-    url: "{{ _.baseUrl }}/protected"
-    name: Erro - Acesso com token inválido
+    url: "{{ _.baseUrl }}/tasks/ID_DA_TAREFA_AQUI"
+    name: Ver Tarefa por ID (GET :id)
     description: ""
     method: GET
     body: {}
@@ -311,6 +266,69 @@ resources:
     headers: []
     authentication:
       type: bearer
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjU4ZjcyMmI5YmUwMzA2MmRlNzU0YiIsImlhdCI6MTcyOTI0NTYwMCwiZXhwIjoxNzI5MjQ1NjAwfQ.TOKEN_INVALIDO_AQUI
-    metaSortKey: -80
+      token: "{{ _.authToken }}"
+    metaSortKey: -70
+    _type: request
+  - _id: req_task_patch
+    parentId: fld_tasks
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/tasks/ID_DA_TAREFA_AQUI"
+    name: Atualizar Tarefa Parcial (PATCH)
+    description: ""
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "isDone": true
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -60
+    _type: request
+  - _id: req_task_put
+    parentId: fld_tasks
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/tasks/ID_DA_TAREFA_AQUI"
+    name: Atualizar Tarefa Total (PUT)
+    description: ""
+    method: PUT
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "description": "Tarefa atualizada via PUT (Prod)",
+          "isDone": true
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -50
+    _type: request
+  - _id: req_task_delete
+    parentId: fld_tasks
+    modified: 1729245600000
+    created: 1729245600000
+    url: "{{ _.baseUrl }}/tasks/ID_DA_TAREFA_AQUI"
+    name: Apagar Tarefa (DELETE)
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: "{{ _.authToken }}"
+    metaSortKey: -40
     _type: request
